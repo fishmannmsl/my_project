@@ -135,7 +135,13 @@
                     $inputCurPassword.val('')
                     $inputNewPassword.val('')
                     $inputNewPasswordRepeat.val('')
-                    location.href = '/login'
+                    ajax.post('/api/user/logout', function(err, data) {
+                        if (err) {
+                            console.error(err)
+                            return
+                        }
+                        location.href = '/login'
+                    })
                 })
             })
 
