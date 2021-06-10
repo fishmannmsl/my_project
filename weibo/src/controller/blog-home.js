@@ -1,7 +1,7 @@
 const xss = require('xss')
-const { createBlog, getFollowersBlogList } = require('../services/blog')
+const { createBlog, getFollowersBlogList, deleteBlogs } = require('../services/blog')
 const { SuccessModel, ErrorModel } = require('../model/ResModel')
-const { createBlogFailInfo } = require('../model/ErrorInfo')
+const { createBlogFailInfo, deleteBlogFailInfo } = require('../model/ErrorInfo')
 const { PAGE_SIZE, REG_FOR_AT_WHO } = require('../conf/constant')
 const { getUserInfo } = require('../services/user')
 const { createAtRelation } = require('../services/at-relation')
@@ -53,6 +53,26 @@ async function create({ userId, content, image }) {
 }
 
 /**
+ * 删除微博
+ * @param {Object} param0 删除微博所需的数据 { userId,content} 
+ */
+async function deleted({ userId, content }) {
+    try {
+        // 删除微博
+        const blog = await deleteBlogs({
+            userId,
+            content
+        })
+
+        // 返回
+        return new SuccessModel(blog)
+    } catch (ex) {
+        console.error(ex.message, ex.stack)
+        return new ErrorModel(deleteBlogFailInfo)
+    }
+}
+
+/**
  * 获取首页微博列表
  * @param {number} userId userId
  * @param {number} pageIndex page index
@@ -77,5 +97,6 @@ async function getHomeBlogList(userId, pageIndex = 0) {
 
 module.exports = {
     create,
-    getHomeBlogList
+    getHomeBlogList,
+    deleted
 }

@@ -16,10 +16,10 @@
             <span><%= blog.createdAtFormat%></span> &nbsp;
             <% if (locals.canReply) { %>
                 <%# 可以回复 %>
-                    <a href="#" class="blog-list-reply" data-content="<%= blog.content%>" data-userName="<%= blog.user.userName%>" data-nickName="<%= blog.user.nickName%>">
+                    <a href="#" class="blog-list-reply" data-userName="<%= blog.user.userName%>" data-nickName="<%= blog.user.nickName%>">
                         <i class="fa fa-mail-reply"></i> 回复
                     </a>
-                    <a href="#" class="delect">删除</i>
+                    <a href="#" class="delectd" id="delect" datas-content="<%= blog.content%>">删除</i>
                     <% } %>
         </div>
     </div>
@@ -56,5 +56,30 @@
                     $textContent.val(' // @' + nickName + ' - ' + userName + ' : ' + content)
                     setCursor($textContent[0], 0, 0)
                 })
+
+                // 删除微博
+                var $textContent = $('#text-content')
+                $('.delectd').click(function (e) {
+                    e.preventDefault()
+                    var $target = $(e.target)
+
+                    // 获取内容
+                    var content = $target.attr('datas-content')
+
+                    // 删除
+                    ajax.post('/api/blog/deleteBlog', {
+                    content: content
+                    }, function (err) {
+                        if (err) {
+                        // 失败
+                        alert(err)
+                        return
+                    }
+                    
+                    // 刷新页面
+                    location.href = location.pathname
             })
+        })
+
+    })
         </script>

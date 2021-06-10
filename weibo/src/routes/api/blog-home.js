@@ -1,6 +1,6 @@
 const router = require('koa-router')()
 const { loginCheck } = require('../../middlewares/loginChecks')
-const { create } = require('../../controller/blog-home')
+const { create, deleted } = require('../../controller/blog-home')
 const { genValidator } = require('../../middlewares/validator')
 const blogValidate = require('../../validator/blog')
 const { getHomeBlogList } = require('../../controller/blog-home')
@@ -13,6 +13,13 @@ router.post('/create', loginCheck, genValidator(blogValidate), async(ctx, next) 
     const { content, image } = ctx.request.body
     const { id: userId } = ctx.session.userInfo
     ctx.body = await create({ userId, content, image })
+})
+
+//删除微博
+router.post('/deleteBlog', loginCheck, genValidator(blogValidate), async(ctx, next) => {
+    const { content } = ctx.request.body
+    const { id: userId } = ctx.session.userInfo
+    ctx.body = await deleted({ userId, content })
 })
 
 // 加载更多
